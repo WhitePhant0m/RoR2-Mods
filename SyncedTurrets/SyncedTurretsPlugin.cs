@@ -11,10 +11,10 @@ namespace SyncedTurrets
     {
         public void Awake()
         {
-            On.RoR2.CharacterMaster.AddDeployable += new On.RoR2.CharacterMaster.hook_AddDeployable(AddBATComponentOnAddDeployableHook);
+            On.RoR2.CharacterMaster.AddDeployable += new On.RoR2.CharacterMaster.hook_AddDeployable(HookThingy);
         }
 
-        private static void AddBATComponentOnAddDeployableHook(On.RoR2.CharacterMaster.orig_AddDeployable orig, CharacterMaster self, Deployable deployable, DeployableSlot slot)
+        private static void HookThingy(On.RoR2.CharacterMaster.orig_AddDeployable orig, CharacterMaster self, Deployable deployable, DeployableSlot slot)
         {
             orig(self, deployable, slot);
             if (slot == DeployableSlot.EngiTurret)
