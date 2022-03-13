@@ -1,58 +1,43 @@
-﻿using RoR2;
-using UnityEngine;
-using static RoR2.RoR2Content.Items;
+﻿using BepInEx;
+using R2API.Utils;
+using RoR2;
+using System.Security.Permissions;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
+#pragma warning restore CS0618 // Type or member is obsolete
 
 namespace SyncedTurrets
 {
-    public class SyncedTurrets : MonoBehaviour
+    [BepInDependency("com.bepis.r2api")]
+#if DEBUG
+    [BepInDependency("com.rune580.riskofoptions")]
+#endif
+    [BepInPlugin(ModID, ModName, ModVer)]
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
+    internal class SyncedTurrets : BaseUnityPlugin
     {
-        internal void Init()
+        private const string ModID = "com.WPhantom." + ModName;
+        private const string ModName = "SyncedTurrets";
+        private const string ModVer = "0.0.2";
+
+        public void Awake()
         {
-            OwnerCharacterMaster.inventory.onInventoryChanged += UpdateInventory;
+            On.RoR2.CharacterMaster.AddDeployable += new On.RoR2.CharacterMaster.hook_AddDeployable(HookThingy);
+#if DEBUG
+            SyncedTurretsConfig.Init(Config);
+#endif
         }
 
-        private void UpdateInventory()
+        private static void HookThingy(On.RoR2.CharacterMaster.orig_AddDeployable orig, CharacterMaster self, Deployable deployable, DeployableSlot slot)
         {
-            if (gameObject == null)
+            orig(self, deployable, slot);
+            if (slot == DeployableSlot.EngiTurret)
             {
-                Destroy(this);
-                return;
+                var syncTurrets = deployable.gameObject.AddComponent<SyncTurrets>();
+                syncTurrets.characterMaster = self;
+                syncTurrets.Init();
             }
-
-            CharacterMaster component = gameObject.GetComponent<CharacterMaster>();
-            if (component == null || !component)
-            {
-                return;
-            }
-
-            Inventory inventory = component.inventory;
-            if (OwnerCharacterMaster.inventory == null || !OwnerCharacterMaster.inventory)
-            {
-                OwnerCharacterMaster = gameObject.GetComponent<Deployable>().ownerMaster;
-            }
-
-            int itemCount = inventory.GetItemCount(ExtraLife.itemIndex);
-
-            int itemCount2 = inventory.GetItemCount(ExtraLifeConsumed.itemIndex);
-
-            inventory.CopyItemsFrom(OwnerCharacterMaster.inventory);
-            inventory.ResetItem(WardOnLevel.itemIndex);
-            inventory.ResetItem(BeetleGland.itemIndex);
-            inventory.ResetItem(CrippleWardOnLevel.itemIndex);
-            inventory.ResetItem(ExtraLife.itemIndex);
-            inventory.ResetItem(ExtraLifeConsumed.itemIndex);
-            inventory.GiveItem(ExtraLife.itemIndex, itemCount);
-            inventory.GiveItem(ExtraLifeConsumed.itemIndex, itemCount2);
-
-            component.GetBody().RecalculateStats();
         }
-
-        private void OnDisable()
-        {
-            OwnerCharacterMaster.inventory.onInventoryChanged -= UpdateInventory;
-            Destroy(this);
-        }
-
-        internal CharacterMaster OwnerCharacterMaster;
     }
 }

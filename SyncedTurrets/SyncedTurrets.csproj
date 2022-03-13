@@ -2,26 +2,31 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<PreserveCompilationContext>false</PreserveCompilationContext>
+		
 		<RoR2>E:\SteamLibrary\steamapps\common\Risk of Rain 2</RoR2>
 		<BepInEx>E:\Thunderstore Storage\RiskOfRain2\profiles\Default\BepInEx</BepInEx>
 		<Uploads>E:\Testing\RoR2-Mods\Uploads</Uploads>
-		<PreserveCompilationContext>false</PreserveCompilationContext>
-	</PropertyGroup>
-	
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<OutputPath>$(Uploads)\REPLACE\</OutputPath>
-		<DebugType>None</DebugType>
-	</PropertyGroup>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>$(Uploads)\SyncedTurrets\</OutputPath>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>$(BepInEx)\plugins\WPhantom-Synced_Turrets</OutputPath>
+  </PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="BepInEx.Analyzers" Version="1.0.*">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-
 		<PackageReference Include="BepInEx.Core" Version="5.4.19" />
-		<PackageReference Include="RiskOfRain2.GameLibs" Version="1.2.1-r.0" />
+		<PackageReference Include="RiskOfRain2.GameLibs" Version="1.2.2-r.0" />
 		<PackageReference Include="UnityEngine.Modules" Version="2019.4.26" />
 
 		<Reference Include="R2API">
@@ -33,5 +38,10 @@
 			<HintPath>$(BepInEx)\plugins\MMHOOK\MMHOOK_RoR2.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
-	</ItemGroup>
+		
+		<Reference Include="RiskOfOptions">
+			<HintPath>$(BepInEx)\plugins\Rune580-Risk_Of_Options\RiskOfOptions.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+  </ItemGroup>
 </Project>

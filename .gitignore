@@ -398,4 +398,6 @@ FodyWeavers.xsd
 *.sln.iml
 
 NotMine
+Uploads
 *.sln
+/SyncedTurrets/SyncedTurrets
